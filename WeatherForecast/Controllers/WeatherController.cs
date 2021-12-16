@@ -5,11 +5,11 @@ namespace WeatherForecast.Controllers
 {
     public class WeatherController : Controller
     {
-        private readonly IWeatherAPISynchronizationService _weatherAPISynchronizationService;
+        private readonly IWeatherService _weatherService;
 
-        public WeatherController(IWeatherAPISynchronizationService weatherAPISynchronizationService)
+        public WeatherController(IWeatherService weatherService)
         {
-            _weatherAPISynchronizationService = weatherAPISynchronizationService;
+            _weatherService = weatherService;
         }
 
         [HttpGet]
@@ -19,9 +19,15 @@ namespace WeatherForecast.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetForecastsByCityName(string city)
+        public IActionResult GetWeatherByCityId(int cityId)
         {
-            return Ok(_weatherAPISynchronizationService.GetForecastsByCityName(city));
+            return Ok(_weatherService.GetWeatherHistoryByCityId(cityId));
+        }
+
+        [HttpGet]
+        public IActionResult GetWeatherByCityName(string city)
+        {
+            return Ok(_weatherService.GetWeatherByCityName(city));
         }
     }
 }

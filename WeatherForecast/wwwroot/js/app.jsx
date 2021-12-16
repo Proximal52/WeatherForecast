@@ -1,21 +1,4 @@
-﻿class WeatherForecastForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { weatherForecast: props.weatherForecast }
-    }
-
-    render() {
-        return (
-            <div>
-                <details>
-                    <summary>API Name: {this.state.weatherForecast.sourceApiName}</summary>
-                    <p>{this.state.weatherForecast.temperature}</p>
-
-                </details>
-            </div>
-        )
-    }
-}
+﻿import WeatherItem from '../js/components/WeatherItem.jsx';
 
 class WeatherForecastSearchForm extends React.Component {
     constructor(props) {
@@ -30,10 +13,8 @@ class WeatherForecastSearchForm extends React.Component {
     }
 
     onGetForecastClick(e) {
-        console.log(this.state.city);
-
         var xhr = new XMLHttpRequest();
-        xhr.open("get", `/Weather/GetForecastsByCityName?city=${this.state.city}`, true)
+        xhr.open("get", `/Weather/GetWeatherByCityName?city=${this.state.city}`, true)
 
         xhr.onload = function () {
             var data = JSON.parse(xhr.responseText);
@@ -46,7 +27,7 @@ class WeatherForecastSearchForm extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="weatherForm">
                 <input type="text"
                     value={this.state.city}
                     onChange={this.onCityChanged} />
@@ -56,7 +37,7 @@ class WeatherForecastSearchForm extends React.Component {
                 <div>
                     {
                         this.state.weatherForecasts.map(function (weatherForecast) {
-                            return <WeatherForecastForm key={weatherForecast.id} weatherForecast={weatherForecast} />
+                            return <WeatherItem key={weatherForecast.id} weatherForecast={weatherForecast} />
                         })
                     }
                 </div>

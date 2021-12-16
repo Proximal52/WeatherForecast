@@ -3,9 +3,9 @@ using WeatherAPI.Standard;
 using WeatherForecast.Models;
 using WeatherForecast.Services.Interfaces;
 
-namespace WeatherForecast.Services
+namespace WeatherForecast.Services.APIServices
 {
-    public interface IWeatherAPIService : IWeatherService
+    public interface IWeatherAPIService : IAPIService
     {
 
     }
@@ -25,18 +25,14 @@ namespace WeatherForecast.Services
 
         public WeatherInfoModel GetWeatherByCityName(string city)
         {
-            try
-            {
-                var weather = _weatherAPIClient.APIs.GetRealtimeWeather(city);
+            var weather = _weatherAPIClient.APIs.GetRealtimeWeather(city);
 
-                //_weatherAPIClient.APIs.
+            return _mapper.Map<WeatherInfoModel>(weather);
+        }
 
-                return _mapper.Map<WeatherInfoModel>(weather);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+        public WeatherInfoModel GetWeatherHistoryByCityName(string city)
+        {
+            throw new NotImplementedException();
         }
     }
 }

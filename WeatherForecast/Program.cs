@@ -1,9 +1,10 @@
-using AutoMapper;
 using JavaScriptEngineSwitcher.ChakraCore;
 using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using React.AspNet;
 using WeatherForecast.Configuration;
+using WeatherForecast.Repositories;
 using WeatherForecast.Services;
+using WeatherForecast.Services.APIServices;
 
 namespace Startup
 {
@@ -26,12 +27,17 @@ namespace Startup
         {
             serviceCollection.AddMvc();
             serviceCollection.AddMemoryCache();
+
             serviceCollection.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             serviceCollection.AddTransient<IWeatherAPISynchronizationService, WeatherAPISynchronizationService>();
             serviceCollection.AddTransient<IOpenWeatherMapAPIService, OpenWeatherMapAPIService>();
             serviceCollection.AddTransient<IWeatherAPIService, WeatherAPIService>();
+            serviceCollection.AddTransient<IWeatherRepository, WeatherRepository>();
+            serviceCollection.AddTransient<IWeatherService, WeatherService>();
+
             serviceCollection.AddReact();
             serviceCollection.AddJsEngineSwitcher(options => options.DefaultEngineName = ChakraCoreJsEngine.EngineName).AddChakraCore();
+
             serviceCollection.AddAutoMapper(cfg => cfg.AddProfile<WeatherProfile>());
         }
 
