@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using WeatherForecast.Models;
+using WeatherForecast.Models.Dbo;
 using WeatherForecast.Repositories;
 
 namespace WeatherForecast.Services
 {
     public interface IWeatherService
     {
-        public void UpdateWeatherHistory();
-        public List<WeatherInfoModel> GetWeatherByCityName(string city);
-        public List<WeatherInfoModel> GetWeatherHistoryByCityId(int cityId);
-        public List<WeatherInfoModel> GetWeatherHistoryByCityName(string cityName);
+        public Task UpdateWeatherHistoryAsync();
+        public Task<List<WeatherInfoModel>> GetWeatherByCityNameAsync(string city);
+        public Task<List<WeatherInfoModel>> GetWeatherHistoryByCityIdAsync(int cityId);
+        public Task<List<WeatherInfoModel>> GetWeatherHistoryByCityNameAsync(string cityName);
     }
 
     public class WeatherService : IWeatherService
@@ -19,7 +20,7 @@ namespace WeatherForecast.Services
         private readonly IMapper _mapper;
 
         public WeatherService(
-            IWeatherRepository weatherRepository, 
+            IWeatherRepository weatherRepository,
             IWeatherAPISynchronizationService synchronizationService,
             IMapper mapper)
         {
@@ -28,14 +29,14 @@ namespace WeatherForecast.Services
             _mapper = mapper;
         }
 
-        public void UpdateWeatherHistory()
+        public async Task UpdateWeatherHistoryAsync()
         {
-            var cities = _weatherRepository.GetAllCities();
+            var cities = await _weatherRepository.GetAllCitiesAsync();
             List<WeatherInfoModel> newWeatherInfo = new();
 
             foreach (var city in cities)
             {
-                var newWeather = _synchronizationService.GetWeatherByCityName(city.Name);
+                var newWeather = await _synchronizationService.GetWeatherByCityNameAsync(city.Name);
 
                 newWeather.ForEach(x => x.City.Id = city.Id);
 
@@ -44,24 +45,23 @@ namespace WeatherForecast.Services
 
             var weatherDboList = newWeatherInfo.Select(x => _mapper.Map<WeatherDbo>(x)).ToList();
 
-            _weatherRepository.SaveWeatherForHistory(weatherDboList);
+            await _weatherRepository.SaveWeatherForHistoryAsync(weatherDboList);
         }
 
-        public List<WeatherInfoModel> GetWeatherByCityName(string city)
+        public async Task<List<WeatherInfoModel>> GetWeatherByCityNameAsync(string city)
         {
-            return _synchronizationService.GetWeatherByCityName(city);
+            return await _synchronizationService.GetWeatherByCityNameAsync(city);
         }
 
-        public List<WeatherInfoModel> GetWeatherHistoryByCityId(int cityId)
+        public async Task<List<WeatherInfoModel>> GetWeatherHistoryByCityIdAsync(int cityId)
         {
-            return _weatherRepository.GetWeatherHistoryByCityId(cityId)
-                .Select(x => _mapper.Map<WeatherInfoModel>(x))
-                .ToList();
+            var result = await _weatherRepository.GetWeatherHistoryByCityIdAsync(cityId);
+            return result.Select(x => _mapper.Map<WeatherInfoModel>(x)).ToList();
         }
 
-        public List<WeatherInfoModel> GetWeatherHistoryByCityName(string cityName)
+        public async Task<List<WeatherInfoModel>> GetWeatherHistoryByCityNameAsync(string cityName)
         {
-            return _synchronizationService.GetWeatherHistoryByCityName(cityName);
+            return await _synchronizationService.GetWeatherHistoryByCityNameAsync(cityName);
         }
     }
 }

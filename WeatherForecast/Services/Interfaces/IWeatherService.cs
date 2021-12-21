@@ -4,9 +4,9 @@ namespace WeatherForecast.Services.Interfaces
 {
     public interface IAPIService
     {
-        public WeatherInfoModel GetWeatherByCityName(string city);
+        public Task<WeatherInfoModel> GetWeatherByCityNameAsync(string city);
 
-        public WeatherInfoModel GetWeatherHistoryByCityName(string city);
+        public Task<WeatherInfoModel> GetWeatherHistoryByCityNameAsync(string city);
 
         public string API_KEY { get; }
     }

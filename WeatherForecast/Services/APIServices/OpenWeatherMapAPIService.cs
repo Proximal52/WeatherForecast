@@ -27,7 +27,7 @@ namespace WeatherForecast.Services.APIServices
             _httpClient = new();
         }
 
-        public WeatherInfoModel GetWeatherByCityName(string city)
+        public async Task<WeatherInfoModel> GetWeatherByCityNameAsync(string city)
         {
             try
             {
@@ -37,10 +37,10 @@ namespace WeatherForecast.Services.APIServices
                     RequestUri = new Uri($"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}")
                 };
 
-                using (var response = _httpClient.SendAsync(request).Result)
+                using (var response = await _httpClient.SendAsync(request))
                 {
                     response.EnsureSuccessStatusCode();
-                    var body = response.Content.ReadAsStringAsync().Result;
+                    var body = await response.Content.ReadAsStringAsync();
 
                     var result = JsonSerializer.Deserialize<OpenWeatherMapModel>(body) ?? new();
 
@@ -54,7 +54,7 @@ namespace WeatherForecast.Services.APIServices
             }
         }
 
-        public WeatherInfoModel GetWeatherHistoryByCityName(string city)
+        public async Task<WeatherInfoModel> GetWeatherHistoryByCityNameAsync(string city)
         {
             try
             {
@@ -67,10 +67,10 @@ namespace WeatherForecast.Services.APIServices
                     RequestUri = new Uri($"http://history.openweathermap.org/data/2.5/history/city?q={city}&type=hour&start={startDateUnix}&end={endDateUnix}&appid={API_KEY}")
                 };
 
-                using (var response = _httpClient.SendAsync(request).Result)
+                using (var response = await _httpClient.SendAsync(request))
                 {
                     response.EnsureSuccessStatusCode();
-                    var body = response.Content.ReadAsStringAsync().Result;
+                    var body = await response.Content.ReadAsStringAsync();
 
                     var result = JsonSerializer.Deserialize<OpenWeatherMapModel>(body) ?? new();
 

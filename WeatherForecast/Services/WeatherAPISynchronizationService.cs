@@ -6,8 +6,8 @@ namespace WeatherForecast.Services
 {
     public interface IWeatherAPISynchronizationService
     {
-        public List<WeatherInfoModel> GetWeatherByCityName(string city);
-        public List<WeatherInfoModel> GetWeatherHistoryByCityName(string city);
+        public Task<List<WeatherInfoModel>> GetWeatherByCityNameAsync(string city);
+        public Task<List<WeatherInfoModel>> GetWeatherHistoryByCityNameAsync(string city);
     }
 
     public class WeatherAPISynchronizationService : IWeatherAPISynchronizationService
@@ -19,14 +19,34 @@ namespace WeatherForecast.Services
             weatherServices = new List<IAPIService> { openWeatherMapAPIService, weatherAPIService };
         }
 
-        public List<WeatherInfoModel> GetWeatherByCityName(string city)
+        public async Task<List<WeatherInfoModel>> GetWeatherByCityNameAsync(string city)
         {
-            return weatherServices.Select(x => x.GetWeatherByCityName(city)).ToList();
+            var result = weatherServices.Select(x => x.GetWeatherByCityNameAsync(city));
+            var resultList = new List<WeatherInfoModel>();
+
+
+            foreach (var task in result)
+            {
+                resultList.Add(await task);
+            }
+
+            return resultList;
+
         }
 
-        public List<WeatherInfoModel> GetWeatherHistoryByCityName(string city)
+        public async Task<List<WeatherInfoModel>> GetWeatherHistoryByCityNameAsync(string city)
         {
-            return weatherServices.Select(x => x.GetWeatherHistoryByCityName(city)).ToList();
+            var result = weatherServices.Select(x => x.GetWeatherHistoryByCityNameAsync(city));
+            var resultList = new List<WeatherInfoModel>();
+
+
+            foreach (var task in result)
+            {
+                resultList.Add(await task);
+            }
+
+            return resultList;
+
         }
     }
 }

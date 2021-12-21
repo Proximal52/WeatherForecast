@@ -23,14 +23,14 @@ namespace WeatherForecast.Services.APIServices
             _weatherAPIClient = new(API_KEY);
         }
 
-        public WeatherInfoModel GetWeatherByCityName(string city)
+        public async Task<WeatherInfoModel> GetWeatherByCityNameAsync(string city)
         {
-            var weather = _weatherAPIClient.APIs.GetRealtimeWeather(city);
+            var weather = await _weatherAPIClient.APIs.GetRealtimeWeatherAsync(city);
 
             return _mapper.Map<WeatherInfoModel>(weather);
         }
 
-        public WeatherInfoModel GetWeatherHistoryByCityName(string city)
+        public async Task<WeatherInfoModel> GetWeatherHistoryByCityNameAsync(string city)
         {
             throw new NotImplementedException();
         }

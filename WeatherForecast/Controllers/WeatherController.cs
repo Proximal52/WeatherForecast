@@ -19,15 +19,15 @@ namespace WeatherForecast.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetWeatherByCityId(int cityId)
+        public async Task<IActionResult> GetWeatherByCityId(int cityId)
         {
-            return Ok(_weatherService.GetWeatherHistoryByCityId(cityId));
+            return Ok(await _weatherService.GetWeatherHistoryByCityIdAsync(cityId));
         }
 
         [HttpGet]
-        public IActionResult GetWeatherByCityName(string city)
+        public async Task<IActionResult> GetWeatherByCityName(string city)
         {
-            return Ok(_weatherService.GetWeatherByCityName(city));
+            return Ok(await _weatherService.GetWeatherByCityNameAsync(city));
         }
     }
 }
